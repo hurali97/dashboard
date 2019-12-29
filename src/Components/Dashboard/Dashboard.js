@@ -11,14 +11,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import { withStyles } from '@material-ui/core/styles';
-import Form from './Component/Form';
-import 'tachyons';
-import './App.css'
-import {dataget, firebasePostRequest} from './FireBase'; 
-import ListElements from './Component/ListElements';
-import logo from './Logo_small.png';
-import SignIn from './Component/SignIn'
-import Spinner from './Component/Spinner';
+import Form from './Form';
+import ListElements from './ListElements';
+import Spinner from './Spinner';
 
 const drawerWidth = 240;
 
@@ -72,23 +67,15 @@ class ResponsiveDrawer extends React.Component {
   state = {
     mobileOpen: false,
     name:'',
-  text:'',
-  url:'',
   loaded:false,
   homeOPEN: false,
   
   };
 
-  handleClick = (text) => {
+  handleClick = () => {
 
-    if (text === 'home') {
         this.setState({ homeOPEN: !this.state.homeOPEN })
         this.setState({name:''});
-//console.log("haha")
-    }
-    else {
-       // console.log("he he he");
-    }
 
 }
 
@@ -98,63 +85,41 @@ class ResponsiveDrawer extends React.Component {
 
  
 onButtonClick=(name)=>{
-
- 
  this.setState({name:name});
-this.homepagecontent("Home/".concat(name));
 
 }
 
+_renderDrawerContents = () => {
+  const { classes } = this.props;
 
-
-async homepagecontent(text){
-  let url='';
- 
-url="Data/".concat(text);
-
-  let data=await dataget(url);
-
-if(!data){
-
-  firebasePostRequest("Data/".concat(text),"","");
-  data=await dataget(url);
-
+  return  <div>
+        <div className={classes.toolbar} />
+      <Divider />
+        <List style={{paddingTop:'0px',paddingBottom:'0px'}}>
+            <ListElements nested={classes.nested} 
+          clickFunction={this.onButtonClick}
+          handleClick={this.handleClick}
+          homeOPEN={this.state.homeOPEN}
+          />
+          
+        </List>
+        <Divider />
+    </div>
 }
- 
-this.setState({text:data.paragraph,url:data.url});
 
+
+_renderPageContent = () => {
+
+  const { classes } = this.props;
+
+  return  <Form content={classes.content} toolbar={classes.toolbar} 
+  inputheight={classes.input} homeOPEN={this.state.homeOPEN}
+  name={this.state.name} 
+  onsignout={this.props.onsignout}/>
 }
 
   render() {
     const { classes, theme } = this.props;
-
-
-  const drawer = (
-    <div>
-      <div className={classes.toolbar} />
-    <Divider />
-      <List style={{paddingTop:'0px',paddingBottom:'0px'}}>
-          <ListElements nested={classes.nested} 
-        clickFunction={this.onButtonClick}
-        handleClick={this.handleClick}
-        homeOPEN={this.state.homeOPEN}
-        />
-        
-      </List>
-      <Divider />
-     
-     
-    </div>
-);
-
-    const FormContent=(
-     
-     <Form content={classes.content} toolbar={classes.toolbar} 
-     inputheight={classes.input} homeOPEN={this.state.homeOPEN}
-     name={this.state.name} text={this.state.text} url={this.state.url}
-     onsignout={this.props.onsignout}/>
-    );
-
 
     return (
     (this.props.success===true)
@@ -182,7 +147,6 @@ this.setState({text:data.paragraph,url:data.url});
       </AppBar>
      
       <nav className={classes.drawer} >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         
         <Hidden smUp implementation="css">
       
@@ -198,7 +162,7 @@ this.setState({text:data.paragraph,url:data.url});
          
           >
       
-            {drawer}
+            { this._renderDrawerContents() }
           </Drawer>
         </Hidden>
         <Hidden xsDown implementation="css">
@@ -210,7 +174,7 @@ this.setState({text:data.paragraph,url:data.url});
             variant="permanent"
             open
           >
-            {drawer}
+             { this._renderDrawerContents() }
          
           </Drawer>
         </Hidden>
@@ -218,24 +182,27 @@ this.setState({text:data.paragraph,url:data.url});
       </nav>
      
       {
-      //admin panel code
       this.state.name!==''
      ?<div>
           
-     {FormContent}</div>
+     { this._renderPageContent() }
+     
+     </div>
      :( 
       <main className={classes.content} >
       <div className={classes.toolbar} />
+      <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
       <h5 onClick={this.props.onsignout}
-          style={{color:'#50C878'}}
-          className=" link  dim tr underline pointer">
+          style={{color:'#50C878', textDecoration: 'underline', cursor: 'pointer'}}
+          >
           Sign Out </h5>
-     <div className='tc' >
+          </div>
+     <div style={{textAlign: 'center'}} >
      <Typography paragraph>
        <div >
          <Spinner />
-        <img src={logo} alt="logo"/>
-         <h3 className='b f3' style={{color:'#50C878'}}> Welcome Admin !</h3>
+     
+         <h3  style={{color:'#50C878', fontWeight : 'bold'}}> Welcome Admin !</h3>
          
        </div>
      </Typography>
@@ -248,7 +215,7 @@ this.setState({text:data.paragraph,url:data.url});
     }
     
     </div>)
-    :<SignIn />
+    : null
      
     );
   }
@@ -257,8 +224,6 @@ this.setState({text:data.paragraph,url:data.url});
 ResponsiveDrawer.propTypes = {
   
   classes: PropTypes.object.isRequired,
-  // Injected by the documentation to work in an iframe.
-  // You won't need it on your project.
   container: PropTypes.object,
   theme: PropTypes.object.isRequired,
 };

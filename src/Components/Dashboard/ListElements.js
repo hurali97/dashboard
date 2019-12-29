@@ -10,11 +10,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
 import AboutUs from '@material-ui/icons/AccountCircleOutlined';
 import Help from '@material-ui/icons/HelpOutline';
-import PilotProgram from '@material-ui/icons/AccessibleForward';
-import Health from '@material-ui/icons/FavoriteBorder';
-import Library from '@material-ui/icons/EventNote';
-import Form from './Form';
-import 'tachyons';
+
 
 class ListElements extends React.Component {
     constructor(props) {
@@ -24,28 +20,11 @@ class ListElements extends React.Component {
         }
     }
 
-    // handleClick = (text) => {
-
-    //     if (text === 'home') {
-    //         this.setState({ homeOPEN: !this.state.homeOPEN })
-
-    //     }
-    //     else {
-    //         console.log("he he he");
-    //     }
-
-    // }
-
-
-
-
-
-
     render() {
         return (
             <List style={{ paddingTop: '0px', paddingBottom: '0px' }}>
 
-                <ListItem button onClick={() => this.props.handleClick('home')}>
+                <ListItem button onClick={() => this.props.handleClick()}>
                     <ListItemIcon>
                         <HomeIcon />
                     </ListItemIcon>
@@ -58,7 +37,7 @@ class ListElements extends React.Component {
 
                         <List component="div" disablePadding>
                             <Divider />
-                            {['About Us', 'Who Do We Help', 'VB Health Care', 'Pilot Programs', 'Library']
+                            {['About Us', 'Help']
                                 .map((text, index) => (
                                     <ListItem button key={text} 
                                     className={this.props.nested} onClick={() => this.props.clickFunction(text)}>
@@ -66,10 +45,7 @@ class ListElements extends React.Component {
                                             {
                                                 (index === 0) ? <AboutUs />
                                                     : (index === 1) ? <Help />
-                                                        : (index === 2) ? <Health />
-                                                            : (index === 3) ? <PilotProgram />
-                                                                : (index === 4) ? <Library />
-                                                                    : console.log()
+                                                                    : null
 
                                             }
                                         </ListItemIcon>
